@@ -1,0 +1,12 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global">
+    <aura:html tag="style">     
+        .slds-modal__content{  
+        overflow-y: hidden !important;
+    }
+    .slds-modal__container{ 
+        max-width: 70vw !important;
+        width:100% !important; 
+    } 
+    </aura:html>
+    <c:quoteLineItemTable recordId="{!v.recordId}" onclose="{!c.closeAction}"></c:quoteLineItemTable>
+</aura:component>

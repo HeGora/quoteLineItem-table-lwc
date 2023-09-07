@@ -1,0 +1,209 @@
+<template>
+    <lightning-modal-header>
+
+    </lightning-modal-header>
+    <lightning-modal-body>
+        <div class="slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none content">
+            <div class="main-table">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered table-fix-head" 
+                    aria-readonly="true" aria-labelledby="element-with-table-label other-element-with-table-label">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Line Number">#</div>
+                            </th>
+                            <th class="lookup-column" scope="col">
+                                <div class="slds-truncate" title={labels.product}>{labels.product}</div>
+                            </th>
+                            <th class="standard-column" scope="col" title="util buttons"></th>
+                            <th class="date-column" scope="col">
+                                <div class="slds-truncate" title={labels.date}>{labels.date}</div>
+                            </th>
+                            <th class="standard-column" scope="col">
+                                <div class="slds-truncate" title={labels.quantity}>{labels.quantity}</div>
+                            </th>
+                            <th class="standard-column" scope="col">
+                                <div class="slds-truncate" title={labels.description}>{labels.description}</div>
+                            </th>
+                            <th class="standard-column" scope="col">
+                                <div class="slds-truncate" title={labels.salesPrice}>{labels.salesPrice}</div>
+                            </th>
+                            <th class="standard-column" scope="col">
+                                <div class="slds-truncate" title={labels.listPrice}>{labels.listPrice}</div>
+                            </th>
+                            <th class="standard-column" scope="col">
+                                <div class="slds-truncate" title={labels.discount}>{labels.discount}</div>
+                            </th>
+                            <th class="standard-column" scope="col">
+                                <div class="slds-truncate" title={labels.totalPrice}>{labels.totalPrice}</div>
+                            </th>
+                            <th class="standard-column" scope="col">
+                                <div class="slds-truncate" title={labels.subtotal}>{labels.subtotal}</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={quoteLineItemList} for:item="quoteLineItem" for:index="index">
+                            <tr key={quoteLineItem.id}>
+                                <td>
+                                    <div title="lineNumber">{quoteLineItem.fakeRowNumber}</div>
+                                </td>
+                                <td>
+                                    <template if:false={quoteLineItem.isSaved}>
+                                        <c-lookup-input
+                                            object-name={PRICEBOOK_ENTRY_OBJECT.object}
+                                            field-name={PRICEBOOK_ENTRY_OBJECT.name}
+                                            conditions={pricebookEntryConditions}
+                                            label=""
+                                            placeholder=""
+                                            icon-name="standard:product"
+                                            data-id={quoteLineItem.id}
+                                            onobjectchange={handleProductChange}>
+                                        </c-lookup-input>
+                                    </template>
+                                    <template if:true={quoteLineItem.isSaved}>
+                                        <div title={labels.product}>{quoteLineItem.productName}</div>
+                                    </template>
+                                </td>
+                                <td>
+                                    <div class="slds-m-horizontal_xx-small util">
+                                        <lightning-button-icon
+                                            if:true={quoteLineItem.isDeletable} 
+                                            icon-name="action:delete" 
+                                            size="medium" 
+                                            variant="bare" 
+                                            alternative-text="Delete" 
+                                            title="Delete" 
+                                            data-id={quoteLineItem.id}
+                                            onclick={handleDelete}>
+                                        </lightning-button-icon>
+                                    </div>
+                                </td>
+                                <td>
+                                    <template if:true={quoteLineItem.isDateEditable}>
+                                        <lightning-input
+                                            type="date"
+                                            class="fields"
+                                            variant="label-hidden"
+                                            name="serviceDate"
+                                            value={quoteLineItem.serviceDate}
+                                            data-id={quoteLineItem.id}
+                                            onchange={handleStandardInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:false={quoteLineItem.isDateEditable}>
+                                        <div title={labels.serviceDate}>{quoteLineItem.serviceDate}</div>
+                                    </template>
+                                </td>
+                                <td>
+                                    <template if:true={quoteLineItem.isQuantityEditable}>
+                                        <lightning-input
+                                            type="number"
+                                            min="1"
+                                            class="fields"
+                                            variant="label-hidden"
+                                            name="quantity"
+                                            value={quoteLineItem.quantity}
+                                            data-id={quoteLineItem.id}
+                                            onchange={handleStandardInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:false={quoteLineItem.isQuantityEditable}>
+                                        <div title={labels.quantity}>{quoteLineItem.quantity}</div>
+                                    </template>
+                                </td>
+                                <td>
+                                    <template if:true={quoteLineItem.isDescriptionEditable}>
+                                        <textarea
+                                            data-id={quoteLineItem.id}
+                                            name="description"
+                                            rows="1"
+                                            oninput={handleDescriptionChange}
+                                            class="slds-textarea textarea">
+                                            {quoteLineItem.description}
+                                        </textarea>
+                                    </template>
+                                    <template if:false={quoteLineItem.isDescriptionEditable}>
+                                        <div title={labels.description}>{quoteLineItem.description}</div>
+                                    </template>
+                                </td>
+                                <td>
+                                    <template if:true={quoteLineItem.isSalesPriceEditable}>
+                                        <lightning-input
+                                            type="number"
+                                            formatter="currency" step=".01"
+                                            class="fields"
+                                            variant="label-hidden"
+                                            name="salesPrice"
+                                            value={quoteLineItem.salesPrice}
+                                            data-id={quoteLineItem.id}
+                                            onchange={handleStandardInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:false={quoteLineItem.isSalesPriceEditable}>
+                                        <div title={labels.salesPrice}>{quoteLineItem.salesPrice}</div>
+                                    </template>
+                                </td>
+                                <td><div title={labels.listPrice}>{quoteLineItem.listPrice}</div></td>
+                                <td>
+                                    <template if:true={quoteLineItem.isDiscountEditable}>
+                                        <lightning-input
+                                            type="number"
+                                            formatter="decimal"
+                                            min="0" max="99" step=".01"
+                                            class="fields"
+                                            variant="label-hidden"
+                                            name="discount"
+                                            value={quoteLineItem.discount}
+                                            data-id={quoteLineItem.id}
+                                            onchange={handleStandardInputChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <template if:false={quoteLineItem.isDiscountEditable}>
+                                        <div title={labels.discount}>{quoteLineItem.discount}</div>
+                                    </template>
+                                </td>
+                                <td><div title={labels.totalPrice}>{quoteLineItem.totalPrice}</div></td>
+                                <td><div title={labels.subtotal}>{quoteLineItem.subtotal}</div></td>
+                            </tr>                        
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>   
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-12 slds-m-right_medium slds-text-align_left">
+                {labels.quoteSubtotal}: {quoteSubtotal}
+            </div>
+            <div class="slds-col slds-size_2-of-12 slds-m-right_medium slds-text-align_left">
+                {labels.quoteTotalPrice}: {quoteTotalPrice}
+            </div>
+            <div class="slds-col slds-size_8-of-12 slds-p-right_xx-large">
+            <lightning-button 
+                variant="brand" 
+                label={labels.addProduct} 
+                title={labels.addProduct} 
+                onclick={handleAddProduct} 
+                class="slds-m-left_x-small">
+            </lightning-button>
+            <lightning-button 
+                variant="brand" 
+                label={labels.save} 
+                title={labels.save} 
+                onclick={handleSave} 
+                class="slds-m-left_x-small" 
+                disabled={isSaveButtonDisabled}>
+            </lightning-button>
+            <lightning-button 
+                variant="brand" 
+                label={labels.cancel} 
+                title={labels.cancel} 
+                onclick={handleCancel} 
+                class="slds-m-left_x-small">
+            </lightning-button>
+            </div>
+        </div>
+    </lightning-modal-footer>
+</template>
