@@ -1,8 +1,8 @@
 # QuoteLineItemTable
 LWC that contains redactable table of QuoteLineItems for Quote object
 ## Specifications
-This components requires some custom labels.
-Custom labels' api names:
+This components requires some custom labels.<br/>
+API names of custom labels:
 - Save
 - Cancel
 - AddProduct
