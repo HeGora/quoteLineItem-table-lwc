@@ -1,2 +1,2 @@
 # quoteLineItemTable
-A redactable table of QuoteLineItems for Quote object for Salesforce
+LWC that contains redactable table of QuoteLineItems for Quote object
